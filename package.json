@@ -1,0 +1,10 @@
+{
+  "name": "chromeless-instagram-post",
+  "version": "1.0.0",
+  "description": "Posts on Instagram with Chromeless",
+  "main": "index.js",
+  "license": "GNU GPLv3",
+  "dependencies": {
+    "chromeless": "^1.5.1"
+  }
+}
