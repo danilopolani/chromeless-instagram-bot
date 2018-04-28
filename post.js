@@ -1,9 +1,10 @@
 const { Chromeless } = require('chromeless')
 
-const USERNAME = ''
-const PASSWORD = ''
-const FILEPATH = '' // Ex: /Users/DaniloPolani/Desktop/file.jpg
-const MEDIA_DESC = ''
+// Settings
+const USERNAME = '' // Instagram username
+const PASSWORD = '' // Instagram password
+const FILEPATH = '' // Path of file to upload, ex: /Users/DaniloPolani/Desktop/file.jpg
+const MEDIA_DESC = '' // Optional description for the media
 
 async function run () {
   const browser = new Chromeless({
@@ -36,12 +37,7 @@ async function run () {
   }
 
   // Upload image
-  await browser
-    .wait('nav[role="navigation"] form input')
-    .evaluate(() => {
-      // document.querySelector('nav[role="navigation"]').style.cssText = 'position:absolute;top:50px'
-      // document.querySelector('nav[role="navigation"] form input').className = ''
-    })
+  await browser.wait('nav[role="navigation"] form input')
 
   // Create Instagram log to allow file upload
   await browser.evaluate(click, '.coreSpriteFeedCreation')

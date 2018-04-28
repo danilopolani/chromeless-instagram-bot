@@ -5,6 +5,7 @@
   "main": "index.js",
   "license": "GNU GPLv3",
   "dependencies": {
-    "chromeless": "^1.5.1"
+    "chromeless": "^1.5.1",
+    "colors": "^1.2.1"
   }
 }
