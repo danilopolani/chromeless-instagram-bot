@@ -7,6 +7,7 @@ const PASSWORD = '' // Instagram password
 const URLS_FILEPATH = 'follow.txt' // Profiles URLS to follow
 const FOLLOW_PRIVATE = false // Should it follow private profiles?
 const WAIT_TIMEOUT = 10000 // Wait timeout between each follow
+const offset = process.argv[2] || 1 // DO NOT EDIT -> Offset line to start with (pass it as arg: node follow.js <line>)
 
 async function run () {
   console.log('Reading file...')
@@ -55,18 +56,24 @@ async function run () {
       await browser.goto('https://www.instagram.com?hl=en')
     }
 
+    // Just to be sure
+    await sleep(3000)
+
     for (let line of data) {
       i++
+
+      // Offset
+      if (i < offset) continue
 
       console.log(`Doing line ${i}/${totalLines}...`)
       try {
         // Go to URL
         await browser
           .goto(line + '?hl=en')
-          .wait('main article header')
+          .wait('main header')
 
         // Check if exists
-        if (await browser.evaluate(findElementByText, `Sorry, this page isn't available`, 'h2') !== false) {
+        if (await browser.evaluate(findElementByText, 'Sorry', 'h2', false) !== false) {
           console.log(`Page not found. Skipping URL: ${line}`.red)
           continue
         }
@@ -75,7 +82,7 @@ async function run () {
         const isPrivate = await browser.evaluate(findElementByText, 'This Account is Private', 'h2') !== false
         if (isPrivate && !FOLLOW_PRIVATE) {
           console.log(`Private account, not following. URL: ${line}`.yellow)
-          return
+          continue
         }
 
         // Check if already following
@@ -123,11 +130,12 @@ run().catch(console.error.bind(console))
  *
  * @param  {String} t - Text to be find
  * @param  {String} e - Element selector
+ * @param  {Boolean} exact - Should it be an exact match or should it contain it?
  * @return {*}
  */
-function findElementByText (t, e = 'button') {
+function findElementByText (t, e = 'button', exact = true) {
   for (let i = 0, b; b = document.querySelectorAll(e)[i]; i++) {
-    if (b.innerText === t) {
+    if (b.innerText === t || (!exact && b.innerText.indexOf(t) > -1)) {
       return '.' + b.getAttribute('class')
         .trim()
         .split(' ')
